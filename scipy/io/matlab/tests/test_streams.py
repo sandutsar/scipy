@@ -16,7 +16,7 @@ import numpy as np
 from numpy.testing import assert_, assert_equal
 from pytest import raises as assert_raises
 
-from scipy.io.matlab.streams import (make_stream,
+from scipy.io.matlab._streams import (make_stream,
     GenericStream, ZlibInputStream,
     _read_into, _read_string, BLOCK_SIZE)
 
@@ -134,7 +134,8 @@ class TestZlibInputStream:
         compressed_data = zlib.compress(data)
 
         # break checksum
-        compressed_data = compressed_data[:-1] + bytes([(compressed_data[-1] + 1) & 255])
+        compressed_data = (compressed_data[:-1]
+                           + bytes([(compressed_data[-1] + 1) & 255]))
 
         compressed_stream = BytesIO(compressed_data)
         stream = ZlibInputStream(compressed_stream, len(compressed_data))
@@ -176,7 +177,8 @@ class TestZlibInputStream:
         compressed_data = zlib.compress(data)
 
         # break checksum
-        compressed_data = compressed_data[:-1] + bytes([(compressed_data[-1] + 1) & 255])
+        compressed_data = (compressed_data[:-1]
+                           + bytes([(compressed_data[-1] + 1) & 255]))
 
         compressed_stream = BytesIO(compressed_data)
         stream = ZlibInputStream(compressed_stream, len(compressed_data))
@@ -219,7 +221,8 @@ class TestZlibInputStream:
         assert_(compressed_data_len == BLOCK_SIZE + 2)
 
         # break checksum
-        compressed_data = compressed_data[:-1] + bytes([(compressed_data[-1] + 1) & 255])
+        compressed_data = (compressed_data[:-1]
+                           + bytes([(compressed_data[-1] + 1) & 255]))
 
         compressed_stream = BytesIO(compressed_data)
         stream = ZlibInputStream(compressed_stream, compressed_data_len)
